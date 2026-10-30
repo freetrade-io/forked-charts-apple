@@ -802,7 +802,10 @@ open class LineChartRenderer: LineRadarRenderer
 
         // Merge nested ordered arrays into the single accessibleChartElements.
         accessibleChartElements.append(contentsOf: accessibilityOrderedElements.flatMap { $0 } )
-        accessibilityPostLayoutChangedNotification()
+        // Freetrade: unlike upstream, don't post a layout-changed accessibility
+        // notification here. drawCircles runs on every draw pass, so charts that
+        // redraw continuously (e.g. a pulsing live-price dot) would flood VoiceOver
+        // with notifications and trap its focus.
     }
 
     open override func drawHighlighted(context: CGContext, indices: [Highlight])
